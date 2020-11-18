@@ -4,16 +4,16 @@ class Chess {
         for (let i = 0; i < 8; i++) {
             let pieces = []
             if (i === 0 ) {
-                pieces = this.initBigPieces(i, false);
+                pieces = this.initBigPieces(i, 2);
             }
             else if  (i === 7) {
-                pieces = this.initBigPieces(i, true);
+                pieces = this.initBigPieces(i, 1);
             }
             else if (i === 1) {
-                pieces = this.initPawns(i, false);
+                pieces = this.initPawns(i, 2);
             }
             else if (i === 6) {
-                pieces = this.initPawns(i, true);
+                pieces = this.initPawns(i, 1);
             }
             else {
                 pieces = this.initEmpty(i);
@@ -45,13 +45,26 @@ class Chess {
     initEmpty(row) {
         let pieces = []
         for (let j = 0; j < 8; j++) {
-            pieces.push(new Piece(0, row, j, false));
+            pieces.push(new Piece(0, row, j, 0));
         }
         return pieces;
     }
 
     isEmpty(row, col) {
         return this.board[row][col].value === 0;
+    }
+
+    isEnemyPiece(row, col, user) {
+        console.log(row, col, this.board[row][col].user, this.user);
+        if (user === 1) {
+            return this.board[row][col].user === 2;
+        }
+        else if (user === 2) {
+            return this.board[row][col].user === 1;
+        }
+        else {
+            return false;
+        }
     }
 
     drawBoard() {
@@ -100,7 +113,7 @@ class Piece {
     }
 
     getImg(user, value) {
-        if (user) {
+        if (user === 1) {
             switch (value) {
                 case 1:
                     return 'img/w_pawn.png';
@@ -118,7 +131,7 @@ class Piece {
                     return '';
             }
         }
-        else {
+        else if (user === 2) {
             switch (value) {
                 case 1:
                     return 'img/b_pawn.png';
@@ -139,10 +152,10 @@ class Piece {
     }
 
     getMoves(board) {
+        let moves = []
         switch (this.value) {
             case 1:
-                let moves = []
-                if (this.user) {
+                if (this.user === 1) {
                     if (this.pos[0] === 6) { // Check forward 2 for first turn
                         if (board.isEmpty(this.pos[0] - 1, this.pos[1]) && board.isEmpty(this.pos[0] - 2, this.pos[1])) {
                             moves.push([this.pos[0] - 2, this.pos[1]]);
@@ -164,7 +177,7 @@ class Piece {
                         }
                     }
                 }
-                else if (!this.user) {
+                else if (this.user === 2) {
                     if (this.pos[0] === 1) { // Check forward 2 for first turn
                         if (board.isEmpty(this.pos[0] + 1, this.pos[1]) && board.isEmpty(this.pos[0] + 2, this.pos[1])) {
                             moves.push([this.pos[0] + 2, this.pos[1]]);
@@ -187,6 +200,48 @@ class Piece {
                     }
                 }
                 return moves;
+            case 2:
+                if (this.pos[0] !== 0 && this.pos[1] >= 2) {  // up 1 left 2
+                    if (board.isEmpty(this.pos[0] - 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 2, this.user)) {
+                        moves.push([this.pos[0] - 1, this.pos[1] - 2]);
+                    }
+                }
+                if (this.pos[0] !== 0 && this.pos[1] <= 5) {  // up 1 right 2
+                    if (board.isEmpty(this.pos[0] - 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 2, this.user)) {
+                        moves.push([this.pos[0] - 1, this.pos[1] + 2]);
+                    }
+                }
+                if (this.pos[0] >= 2 && this.pos[1] !== 0) {  // up 2 left 1
+                    if (board.isEmpty(this.pos[0] - 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] - 1, this.user)) {
+                        moves.push([this.pos[0] - 2, this.pos[1] - 1]);
+                    }
+                }
+                if (this.pos[0] >= 2 && this.pos[1] !== 7) {  // up 2 right 1
+                    if (board.isEmpty(this.pos[0] - 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] + 1, this.user)) {
+                        moves.push([this.pos[0] - 2, this.pos[1] + 1]);
+                    }
+                }
+                if (this.pos[0] !== 7 && this.pos[1] >= 2) {  // down 1 left 2
+                    if (board.isEmpty(this.pos[0] + 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 2, this.user)) {
+                        moves.push([this.pos[0] + 1, this.pos[1] - 2]);
+                    }
+                }
+                if (this.pos[0] !== 7 && this.pos[1] <= 5) {  // down 1 right 2
+                    if (board.isEmpty(this.pos[0] + 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 2, this.user)) {
+                        moves.push([this.pos[0] + 1, this.pos[1] + 2]);
+                    }
+                }
+                if (this.pos[0] <= 5 && this.pos[1] !== 0) {  // down 2 left 1
+                    if (board.isEmpty(this.pos[0] + 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] - 1, this.user)) {
+                        moves.push([this.pos[0] + 2, this.pos[1] - 1]);
+                    }
+                }
+                if (this.pos[0] <= 5 && this.pos[1] !== 7) {  // up 2 right 1
+                    if (board.isEmpty(this.pos[0] + 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] + 1, this.user)) {
+                        moves.push([this.pos[0] + 2, this.pos[1] + 1]);
+                    }
+                }
+                return moves;
         }
     }
 }
@@ -194,8 +249,11 @@ class Piece {
 
 function main() {
     var game = new Chess();
+    console.log(game);
+    game.board[2][2] = game.board[7][1];
+    game.board[2][2].pos = [2, 2];
     game.drawBoard();
-    console.log(game.board[1][4].getMoves(game));
+    console.log(game.board[2][2].getMoves(game));
 }
 
 main()

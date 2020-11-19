@@ -55,7 +55,6 @@ class Chess {
     }
 
     isEnemyPiece(row, col, user) {
-        console.log(row, col, this.board[row][col].user, this.user);
         if (user === 1) {
             return this.board[row][col].user === 2;
         }
@@ -151,97 +150,229 @@ class Piece {
         }
     }
 
-    getMoves(board) {
+    pawnMoves(board) {
+        let moves = [];
+        if (this.user === 1) {
+            if (this.pos[0] === 6) { // Check forward 2 for first turn
+                if (board.isEmpty(this.pos[0] - 1, this.pos[1]) && board.isEmpty(this.pos[0] - 2, this.pos[1])) {
+                    moves.push([this.pos[0] - 2, this.pos[1]]);
+                }
+            }
+            if (this.pos[0] !== 0) {
+                if (board.isEmpty(this.pos[0] - 1, this.pos[1])) { // Check forward 1
+                    moves.push([this.pos[0] - 1, this.pos[1]]);
+                }
+            }
+            if (this.pos[0] !== 0 && this.pos[1] !== 0) { // Check attack left
+                if (!board.isEmpty(this.pos[0] - 1, this.pos[1] - 1)) {
+                    moves.push([this.pos[0] - 1, this.pos[1] - 1]);
+                }
+            }
+            if (this.pos[0] !== 0 && this.pos[1] !== 7) { // Check attack right
+                if (!board.isEmpty(this.pos[0] - 1, this.pos[1] + 1)) {
+                    moves.push([this.pos[0] - 1, this.pos[1] + 1]);
+                }
+            }
+        }
+        else if (this.user === 2) {
+            if (this.pos[0] === 1) { // Check forward 2 for first turn
+                if (board.isEmpty(this.pos[0] + 1, this.pos[1]) && board.isEmpty(this.pos[0] + 2, this.pos[1])) {
+                    moves.push([this.pos[0] + 2, this.pos[1]]);
+                }
+            }
+            if (this.pos[0] !== 7) {
+                if (board.isEmpty(this.pos[0] + 1, this.pos[1])) { // Check forward 1
+                    moves.push([this.pos[0] + 1, this.pos[1]]);
+                }
+            }
+            if (this.pos[0] !== 7 && this.pos[1] !== 7) { // Check attack left
+                if (!board.isEmpty(this.pos[0] + 1, this.pos[1] + 1)) {
+                    moves.push([this.pos[0] + 1, this.pos[1] + 1]);
+                }
+            }
+            if (this.pos[0] !== 7 && this.pos[1] !== 0) { // Check attack right
+                if (!board.isEmpty(this.pos[0] + 1, this.pos[1] - 1)) {
+                    moves.push([this.pos[0] + 1, this.pos[1] - 1]);
+                }
+            }
+        }
+        return moves;
+    }
+
+    knightMoves(board) {
+        let moves = [];
+        if (this.pos[0] !== 0 && this.pos[1] >= 2) {  // up 1 left 2
+            if (board.isEmpty(this.pos[0] - 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 2, this.user)) {
+                moves.push([this.pos[0] - 1, this.pos[1] - 2]);
+            }
+        }
+        if (this.pos[0] !== 0 && this.pos[1] <= 5) {  // up 1 right 2
+            if (board.isEmpty(this.pos[0] - 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 2, this.user)) {
+                moves.push([this.pos[0] - 1, this.pos[1] + 2]);
+            }
+        }
+        if (this.pos[0] >= 2 && this.pos[1] !== 0) {  // up 2 left 1
+            if (board.isEmpty(this.pos[0] - 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] - 1, this.user)) {
+                moves.push([this.pos[0] - 2, this.pos[1] - 1]);
+            }
+        }
+        if (this.pos[0] >= 2 && this.pos[1] !== 7) {  // up 2 right 1
+            if (board.isEmpty(this.pos[0] - 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] + 1, this.user)) {
+                moves.push([this.pos[0] - 2, this.pos[1] + 1]);
+            }
+        }
+        if (this.pos[0] !== 7 && this.pos[1] >= 2) {  // down 1 left 2
+            if (board.isEmpty(this.pos[0] + 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 2, this.user)) {
+                moves.push([this.pos[0] + 1, this.pos[1] - 2]);
+            }
+        }
+        if (this.pos[0] !== 7 && this.pos[1] <= 5) {  // down 1 right 2
+            if (board.isEmpty(this.pos[0] + 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 2, this.user)) {
+                moves.push([this.pos[0] + 1, this.pos[1] + 2]);
+            }
+        }
+        if (this.pos[0] <= 5 && this.pos[1] !== 0) {  // down 2 left 1
+            if (board.isEmpty(this.pos[0] + 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] - 1, this.user)) {
+                moves.push([this.pos[0] + 2, this.pos[1] - 1]);
+            }
+        }
+        if (this.pos[0] <= 5 && this.pos[1] !== 7) {  // up 2 right 1
+            if (board.isEmpty(this.pos[0] + 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] + 1, this.user)) {
+                moves.push([this.pos[0] + 2, this.pos[1] + 1]);
+            }
+        }
+        return moves;
+    }
+
+    bishopMoves(board, temp) {
+        let moves = [];
+        while (this.pos[0] !== 0 && this.pos[1] !== 7 && board.isEmpty(this.pos[0] - 1, this.pos[1] + 1)) {  // check up right
+            moves.push([this.pos[0] - 1, this.pos[1] + 1])
+            this.pos[0] -= 1;
+            this.pos[1] += 1;
+        }
+        if (this.pos[0] !== 0 && this.pos[1] !== 7 && board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 1, this.user)) {
+            moves.push([this.pos[0] - 1, this.pos[1] + 1]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[0] !== 0 && this.pos[1] !== 0 && board.isEmpty(this.pos[0] - 1, this.pos[1] - 1)) {  // check up left
+            moves.push([this.pos[0] - 1, this.pos[1] - 1])
+            this.pos[0] -= 1;
+            this.pos[1] -= 1;
+        }
+        if (this.pos[0] !== 0 && this.pos[1] !== 0 && board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 1, this.user)) {
+            moves.push([this.pos[0] - 1, this.pos[1] - 1]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[0] !== 7 && this.pos[1] !== 7 && board.isEmpty(this.pos[0] + 1, this.pos[1] + 1)) {  // check down right
+            moves.push([this.pos[0] + 1, this.pos[1] + 1])
+            this.pos[0] += 1;
+            this.pos[1] += 1;
+        }
+        if (this.pos[0] !== 7 && this.pos[1] !== 7 && board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 1, this.user)) {
+            moves.push([this.pos[0] + 1, this.pos[1] + 1]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[0] !== 7 && this.pos[1] !== 0 && board.isEmpty(this.pos[0] + 1, this.pos[1] - 1)) {  // check down left
+            moves.push([this.pos[0] + 1, this.pos[1] - 1]);
+            this.pos[0] += 1;
+            this.pos[1] -= 1;
+        }
+        if (this.pos[0] !== 7 && this.pos[1] !== 0 && board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 1, this.user)) {
+            moves.push([this.pos[0] + 1, this.pos[1] - 1]);
+        }
+        this.pos = Object.assign([], temp);
+        return moves;
+    }
+
+    rookMoves(board, temp) {
         let moves = []
+        while (this.pos[0] !== 0 && board.isEmpty(this.pos[0] - 1, this.pos[1])) {  // check up
+            moves.push([this.pos[0] - 1, this.pos[1]]);
+            this.pos[0] -= 1;
+        }
+        if (this.pos[0] !== 0 && board.isEnemyPiece(this.pos[0] - 1, this.pos[1], this.user)) {
+            moves.push([this.pos[0] - 1, this.pos[1]]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[0] !== 7 && board.isEmpty(this.pos[0] + 1, this.pos[1])) {  // check up
+            moves.push([this.pos[0] + 1, this.pos[1]]);
+            this.pos[0] += 1;
+        }
+        if (this.pos[0] !== 7 && board.isEnemyPiece(this.pos[0] + 1, this.pos[1], this.user)) {  // check down
+            moves.push([this.pos[0] + 1, this.pos[1]]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[1] !== 0 && board.isEmpty(this.pos[0], this.pos[1] - 1)) {  // check up
+            moves.push([this.pos[0], this.pos[1] - 1]);
+            this.pos[1] -= 1;
+        }
+        if (this.pos[1] !== 0 && board.isEnemyPiece(this.pos[0], this.pos[1] - 1, this.user)) {  // check left
+            moves.push([this.pos[0], this.pos[1] - 1]);
+        }
+        this.pos = Object.assign([], temp);
+        while (this.pos[1] !== 7 && board.isEmpty(this.pos[0], this.pos[1] + 1)) {  // check left
+            moves.push([this.pos[0], this.pos[1] + 1]);
+            this.pos[1] += 1;
+        }
+        if (this.pos[1] !== 7 && board.isEnemyPiece(this.pos[0], this.pos[1] + 1, this.user)) {  // check right
+            moves.push([this.pos[0], this.pos[1] + 1]);
+        }
+        this.pos = Object.assign([], temp);
+        return moves;
+    }
+
+    queenMoves(board, temp) {
+        return this.bishopMoves(board, temp).concat(this.rookMoves(board, temp));
+    }
+
+    kingMoves(board) {
+        let moves = [];
+        if (this.pos[0] !== 0 && (board.isEmpty(this.pos[0] - 1, this.pos[1])) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1], this.user)) {  // check up
+            moves.push([this.pos[0] - 1, this.pos[1]]);
+        }
+        if (this.pos[0] !== 7 && (board.isEmpty(this.pos[0] + 1, this.pos[1])) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1], this.user)) {  // check down
+            moves.push([this.pos[0] + 1, this.pos[1]]);
+        }
+        if (this.pos[1] !== 0 && (board.isEmpty(this.pos[0], this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0], this.pos[1] - 1, this.user)) {  // check left
+            moves.push([this.pos[0], this.pos[1] - 1]);
+        }
+        if (this.pos[1] !== 7 && (board.isEmpty(this.pos[0], this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0], this.pos[1] + 1, this.user)) {  // check up
+            moves.push([this.pos[0], this.pos[1] + 1]);
+        }
+        if (this.pos[0] !== 0 && this.pos[1] !== 0 && (board.isEmpty(this.pos[0] - 1, this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 1, this.user)) {  // check up-left
+            moves.push([this.pos[0] - 1, this.pos[1] - 1]);
+        }
+        if (this.pos[0] !== 0 && this.pos[1] !== 7 && (board.isEmpty(this.pos[0] - 1, this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 1, this.user)) {  // check up-right
+            moves.push([this.pos[0] - 1, this.pos[1] + 1]);
+        }
+        if (this.pos[0] !== 7 && this.pos[1] !== 0 && (board.isEmpty(this.pos[0] + 1, this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 1, this.user)) {  // check down-left
+            moves.push([this.pos[0] + 1, this.pos[1] - 1]);
+        }
+        if (this.pos[0] !== 7 && this.pos[1] !== 7 && (board.isEmpty(this.pos[0] + 1, this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 1, this.user)) {  // check down-right
+            moves.push([this.pos[0] + 1, this.pos[1] + 1]);
+        }
+        return moves;
+    }
+
+    getMoves(board) {
+        const temp = Object.assign([], this.pos);
         switch (this.value) {
             case 1:
-                if (this.user === 1) {
-                    if (this.pos[0] === 6) { // Check forward 2 for first turn
-                        if (board.isEmpty(this.pos[0] - 1, this.pos[1]) && board.isEmpty(this.pos[0] - 2, this.pos[1])) {
-                            moves.push([this.pos[0] - 2, this.pos[1]]);
-                        }
-                    }
-                    if (this.pos[0] !== 0) {
-                        if (board.isEmpty(this.pos[0] - 1, this.pos[1])) { // Check forward 1
-                            moves.push([this.pos[0] - 1, this.pos[1]]);
-                        }
-                    }
-                    if (this.pos[0] !== 0 && this.pos[1] !== 0) { // Check attack left
-                        if (!board.isEmpty(this.pos[0] - 1, this.pos[1] - 1)) {
-                            moves.push([this.pos[0] - 1, this.pos[1] - 1]);
-                        }
-                    }
-                    if (this.pos[0] !== 0 && this.pos[1] !== 7) { // Check attack right
-                        if (!board.isEmpty(this.pos[0] - 1, this.pos[1] + 1)) {
-                            moves.push([this.pos[0] - 1, this.pos[1] + 1]);
-                        }
-                    }
-                }
-                else if (this.user === 2) {
-                    if (this.pos[0] === 1) { // Check forward 2 for first turn
-                        if (board.isEmpty(this.pos[0] + 1, this.pos[1]) && board.isEmpty(this.pos[0] + 2, this.pos[1])) {
-                            moves.push([this.pos[0] + 2, this.pos[1]]);
-                        }
-                    }
-                    if (this.pos[0] !== 7) {
-                        if (board.isEmpty(this.pos[0] + 1, this.pos[1])) { // Check forward 1
-                            moves.push([this.pos[0] + 1, this.pos[1]]);
-                        }
-                    }
-                    if (this.pos[0] !== 7 && this.pos[1] !== 7) { // Check attack left
-                        if (!board.isEmpty(this.pos[0] + 1, this.pos[1] + 1)) {
-                            moves.push([this.pos[0] + 1, this.pos[1] + 1]);
-                        }
-                    }
-                    if (this.pos[0] !== 7 && this.pos[1] !== 0) { // Check attack right
-                        if (!board.isEmpty(this.pos[0] + 1, this.pos[1] - 1)) {
-                            moves.push([this.pos[0] + 1, this.pos[1] - 1]);
-                        }
-                    }
-                }
-                return moves;
+                return this.pawnMoves(board);
             case 2:
-                if (this.pos[0] !== 0 && this.pos[1] >= 2) {  // up 1 left 2
-                    if (board.isEmpty(this.pos[0] - 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 2, this.user)) {
-                        moves.push([this.pos[0] - 1, this.pos[1] - 2]);
-                    }
-                }
-                if (this.pos[0] !== 0 && this.pos[1] <= 5) {  // up 1 right 2
-                    if (board.isEmpty(this.pos[0] - 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 2, this.user)) {
-                        moves.push([this.pos[0] - 1, this.pos[1] + 2]);
-                    }
-                }
-                if (this.pos[0] >= 2 && this.pos[1] !== 0) {  // up 2 left 1
-                    if (board.isEmpty(this.pos[0] - 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] - 1, this.user)) {
-                        moves.push([this.pos[0] - 2, this.pos[1] - 1]);
-                    }
-                }
-                if (this.pos[0] >= 2 && this.pos[1] !== 7) {  // up 2 right 1
-                    if (board.isEmpty(this.pos[0] - 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] - 2, this.pos[1] + 1, this.user)) {
-                        moves.push([this.pos[0] - 2, this.pos[1] + 1]);
-                    }
-                }
-                if (this.pos[0] !== 7 && this.pos[1] >= 2) {  // down 1 left 2
-                    if (board.isEmpty(this.pos[0] + 1, this.pos[1] - 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 2, this.user)) {
-                        moves.push([this.pos[0] + 1, this.pos[1] - 2]);
-                    }
-                }
-                if (this.pos[0] !== 7 && this.pos[1] <= 5) {  // down 1 right 2
-                    if (board.isEmpty(this.pos[0] + 1, this.pos[1] + 2) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 2, this.user)) {
-                        moves.push([this.pos[0] + 1, this.pos[1] + 2]);
-                    }
-                }
-                if (this.pos[0] <= 5 && this.pos[1] !== 0) {  // down 2 left 1
-                    if (board.isEmpty(this.pos[0] + 2, this.pos[1] - 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] - 1, this.user)) {
-                        moves.push([this.pos[0] + 2, this.pos[1] - 1]);
-                    }
-                }
-                if (this.pos[0] <= 5 && this.pos[1] !== 7) {  // up 2 right 1
-                    if (board.isEmpty(this.pos[0] + 2, this.pos[1] + 1) || board.isEnemyPiece(this.pos[0] + 2, this.pos[1] + 1, this.user)) {
-                        moves.push([this.pos[0] + 2, this.pos[1] + 1]);
-                    }
-                }
-                return moves;
+                return this.knightMoves(board);
+            case 3:
+                return this.bishopMoves(board, temp);
+            case 5:
+                return this.rookMoves(board, temp);
+            case 9:
+                return this.queenMoves(board, temp);
+            case 25:
+                return this.kingMoves(board);
+            default:
+                return []
+
         }
     }
 }
@@ -249,11 +380,8 @@ class Piece {
 
 function main() {
     var game = new Chess();
-    console.log(game);
-    game.board[2][2] = game.board[7][1];
-    game.board[2][2].pos = [2, 2];
     game.drawBoard();
-    console.log(game.board[2][2].getMoves(game));
+    console.log(game.board[4][4].getMoves(game));
 }
 
 main()

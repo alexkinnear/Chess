@@ -69,7 +69,8 @@
       <workItem from="1605590897701" duration="6426000" />
       <workItem from="1605649808470" duration="1457000" />
       <workItem from="1605672260376" duration="4529000" />
-      <workItem from="1605737010903" duration="10376000" />
+      <workItem from="1605737010903" duration="10754000" />
+      <workItem from="1605848658449" duration="4862000" />
     </task>
     <servers />
   </component>
@@ -77,6 +78,14 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="741" y="223" key="#Web_Browsers" timestamp="1605853487532">
+      <screen x="0" y="23" width="1920" height="1007" />
+    </state>
+    <state x="741" y="223" key="#Web_Browsers/0.23.1920.1007@0.23.1920.1007" timestamp="1605853487532" />
+    <state x="424" y="100" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605853492265">
+      <screen x="0" y="23" width="1920" height="1007" />
+    </state>
+    <state x="424" y="100" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1007@0.23.1920.1007" timestamp="1605853492265" />
     <state x="58" y="176" width="670" height="676" key="search.everywhere.popup" timestamp="1605600773800">
       <screen x="0" y="23" width="1440" height="830" />
     </state>

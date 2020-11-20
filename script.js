@@ -1,6 +1,6 @@
 class Chess {
     constructor() {
-        this.board = []
+        this.board = [];
         for (let i = 0; i < 8; i++) {
             let pieces = []
             if (i === 0 ) {
@@ -97,8 +97,17 @@ class Chess {
 
             }
         }
+        var game = this;
+        document.body.onclick = function(event) {
+            let x = event.clientX;
+            let y = event.clientY;
+            let row = Math.floor(y * 8.5 / canvas.width);
+            let col = Math.floor(x * 8.5 / canvas.width);
+            game.board[0][0].context.fillStyle = "rgba(0, 0, 0, 0)";
+            game.board[0][0].context.fillRect(0, 0, game.board[0][0].canvas.width, game.board[0][0].canvas.height);
+            game.board[row][col].showMoves(game);
+        }
     }
-
 }
 
 
@@ -109,6 +118,8 @@ class Piece {
         this.user = user;
         this.captured = false;
         this.img = this.getImg(this.user, this.value);
+        this.canvas = document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
     }
 
     getImg(user, value) {
@@ -375,13 +386,27 @@ class Piece {
 
         }
     }
+
+    showMoves(board) {
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.canvas.style.position = 'absolute';
+        document.body.appendChild(this.canvas);
+        this.context.strokeStyle = 'Chartreuse';
+        this.context.lineWidth = 5;
+        let moves = this.getMoves(board);
+        for (let i = 0; i < moves.length; i++) {
+            this.context.strokeRect(moves[i][1] * this.canvas.width / 8.5, moves[i][0] * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
+        }
+    }
 }
 
 
 function main() {
     var game = new Chess();
     game.drawBoard();
-    console.log(game.board[4][4].getMoves(game));
 }
 
 main()

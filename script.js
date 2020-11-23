@@ -1,5 +1,7 @@
 class Chess {
     constructor() {
+        this.canvas = document.createElement('canvas');
+        this.context = this.canvas.getContext('2d');
         this.board = [];
         for (let i = 0; i < 8; i++) {
             let pieces = []
@@ -67,44 +69,47 @@ class Chess {
     }
 
     drawBoard() {
-        var canvas = document.createElement('canvas');
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        canvas.style.position = 'absolute';
-        document.body.appendChild(canvas);
-        var context = canvas.getContext('2d');
+        this.canvas.style.width = '100%';
+        this.canvas.style.height = '100%';
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.canvas.style.position = 'absolute';
+        document.body.appendChild(this.canvas);
         let flip = true;
         for (let i = 0; i < 8; i++) {
             flip = !flip;
             for (let j = 0; j < 8; j++) {
                 if ((flip && j % 2 === 0) || (!flip && j % 2 === 1)) {
-                    context.rect(j * canvas.width / 8.5, i * canvas.width / 8.5, canvas.width / 8.5, canvas.width / 8.5);
-                    context.fillStyle = 'BurlyWood';
-                    context.fill();
+                    this.context.rect(j * this.canvas.width / 8.5, i * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
+                    this.context.fillStyle = 'BurlyWood';
+                    this.context.fill();
                 }
+                let game = this;
                 if (this.board[i][j].value !== 0) {
                     let image = new Image();
                     image.src = this.board[i][j].img;
                     image.onload = function() {
-                        let x = j * canvas.width / 8.5;
-                        let y = i * canvas.width / 8.5;
-                        let w = canvas.width / 8.5;
-                        context.drawImage(image, x, y, w, w);
+                        let x = j * game.canvas.width / 8.5;
+                        let y = i * game.canvas.width / 8.5;
+                        let w = game.canvas.width / 8.5;
+                        game.context.drawImage(image, x, y, w, w);
                     }
                 }
 
+            }
+        }
+        this.context.lineWidth = 4;
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                this.context.strokeRect(j * this.canvas.width / 8.5, i * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
             }
         }
         var game = this;
         document.body.onclick = function(event) {
             let x = event.clientX;
             let y = event.clientY;
-            let row = Math.floor(y * 8.5 / canvas.width);
-            let col = Math.floor(x * 8.5 / canvas.width);
-            game.board[0][0].context.fillStyle = "rgba(0, 0, 0, 0)";
-            game.board[0][0].context.fillRect(0, 0, game.board[0][0].canvas.width, game.board[0][0].canvas.height);
+            let row = Math.floor(y * 8.5 / game.canvas.width);
+            let col = Math.floor(x * 8.5 / game.canvas.width);
             game.board[row][col].showMoves(game);
         }
     }
@@ -394,8 +399,14 @@ class Piece {
         this.canvas.height = window.innerHeight;
         this.canvas.style.position = 'absolute';
         document.body.appendChild(this.canvas);
+        // this.context.strokeStyle = 'Red';
+        this.context.lineWidth = 4;
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                this.context.strokeRect(j * this.canvas.width / 8.5, i * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
+            }
+        }
         this.context.strokeStyle = 'Chartreuse';
-        this.context.lineWidth = 5;
         let moves = this.getMoves(board);
         for (let i = 0; i < moves.length; i++) {
             this.context.strokeRect(moves[i][1] * this.canvas.width / 8.5, moves[i][0] * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);

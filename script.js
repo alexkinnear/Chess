@@ -104,14 +104,7 @@ class Chess {
                 this.context.strokeRect(j * this.canvas.width / 8.5, i * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
             }
         }
-        var game = this;
-        document.body.onclick = function(event) {
-            let x = event.clientX;
-            let y = event.clientY;
-            let row = Math.floor(y * 8.5 / game.canvas.width);
-            let col = Math.floor(x * 8.5 / game.canvas.width);
-            game.board[row][col].showMoves(game);
-        }
+
     }
 }
 
@@ -344,29 +337,14 @@ class Piece {
 
     kingMoves(board) {
         let moves = [];
-        if (this.pos[0] !== 0 && (board.isEmpty(this.pos[0] - 1, this.pos[1])) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1], this.user)) {  // check up
-            moves.push([this.pos[0] - 1, this.pos[1]]);
-        }
-        if (this.pos[0] !== 7 && (board.isEmpty(this.pos[0] + 1, this.pos[1])) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1], this.user)) {  // check down
-            moves.push([this.pos[0] + 1, this.pos[1]]);
-        }
-        if (this.pos[1] !== 0 && (board.isEmpty(this.pos[0], this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0], this.pos[1] - 1, this.user)) {  // check left
-            moves.push([this.pos[0], this.pos[1] - 1]);
-        }
-        if (this.pos[1] !== 7 && (board.isEmpty(this.pos[0], this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0], this.pos[1] + 1, this.user)) {  // check up
-            moves.push([this.pos[0], this.pos[1] + 1]);
-        }
-        if (this.pos[0] !== 0 && this.pos[1] !== 0 && (board.isEmpty(this.pos[0] - 1, this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] - 1, this.user)) {  // check up-left
-            moves.push([this.pos[0] - 1, this.pos[1] - 1]);
-        }
-        if (this.pos[0] !== 0 && this.pos[1] !== 7 && (board.isEmpty(this.pos[0] - 1, this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0] - 1, this.pos[1] + 1, this.user)) {  // check up-right
-            moves.push([this.pos[0] - 1, this.pos[1] + 1]);
-        }
-        if (this.pos[0] !== 7 && this.pos[1] !== 0 && (board.isEmpty(this.pos[0] + 1, this.pos[1] - 1)) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] - 1, this.user)) {  // check down-left
-            moves.push([this.pos[0] + 1, this.pos[1] - 1]);
-        }
-        if (this.pos[0] !== 7 && this.pos[1] !== 7 && (board.isEmpty(this.pos[0] + 1, this.pos[1] + 1)) || board.isEnemyPiece(this.pos[0] + 1, this.pos[1] + 1, this.user)) {  // check down-right
-            moves.push([this.pos[0] + 1, this.pos[1] + 1]);
+        for (let i = this.pos[0] - 1; i <= this.pos[0] + 1; i++) {
+            for (let j = this.pos[1] - 1; j <= this.pos[1] + 1; j++) {
+                if (i >= 0 && i <= 7 && j >= 0 && j <= 7) {
+                    if (board.isEmpty(i, j) || board.isEnemyPiece(i, j, this.user)) {
+                        moves.push([i, j]);
+                    }
+                }
+            }
         }
         return moves;
     }
@@ -399,7 +377,6 @@ class Piece {
         this.canvas.height = window.innerHeight;
         this.canvas.style.position = 'absolute';
         document.body.appendChild(this.canvas);
-        // this.context.strokeStyle = 'Red';
         this.context.lineWidth = 4;
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -412,11 +389,46 @@ class Piece {
             this.context.strokeRect(moves[i][1] * this.canvas.width / 8.5, moves[i][0] * this.canvas.width / 8.5, this.canvas.width / 8.5, this.canvas.width / 8.5);
         }
     }
+
+    inMoves(moves, row, col) {
+        for (let i = 0; i < moves.length; i++) {
+            if (moves[i][0] === row && moves[i][1] === col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
 
 
 function main() {
     var game = new Chess();
+    var currentTurn = 1;
+    var selectedPiece;
+    document.body.onclick = function(event) {
+        let x = event.clientX;
+        let y = event.clientY;
+        let row = Math.floor(y * 8.5 / game.canvas.width);
+        let col = Math.floor(x * 8.5 / game.canvas.width);
+        if (currentTurn === 1 && game.board[row][col].user === 1) {
+            game.board[row][col].showMoves(game);
+            selectedPiece = game.board[row][col];
+        }
+        else {
+            let moves = selectedPiece.getMoves(game);
+            if (game.board[row][col].inMoves(moves, row, col)) {
+                game.board[row][col] = selectedPiece;
+                game.board[selectedPiece.pos[0]][selectedPiece.pos[1]] = new Piece(0, selectedPiece.pos[0], selectedPiece.pos[1], 0);
+                game.board[row][col].pos = [row, col];
+                selectedPiece = new Piece(0, 0, 0, 0);
+                game.drawBoard();
+            }
+        }
+
+    }
+
     game.drawBoard();
 }
 

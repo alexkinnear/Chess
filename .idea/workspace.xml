@@ -39,6 +39,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -74,7 +75,9 @@
       <workItem from="1605938706625" duration="5949000" />
       <workItem from="1606023257186" duration="1055000" />
       <workItem from="1606031684423" duration="1429000" />
-      <workItem from="1606114621247" duration="559000" />
+      <workItem from="1606114621247" duration="1150000" />
+      <workItem from="1606206974801" duration="705000" />
+      <workItem from="1606288275594" duration="8866000" />
     </task>
     <servers />
   </component>
@@ -90,6 +93,10 @@
       <screen x="0" y="23" width="1920" height="1007" />
     </state>
     <state x="424" y="100" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1920.1007@0.23.1920.1007" timestamp="1605853492265" />
+    <state x="68" y="62" key="SettingsEditor" timestamp="1606207251396">
+      <screen x="0" y="23" width="1440" height="830" />
+    </state>
+    <state x="68" y="62" key="SettingsEditor/0.23.1440.830@0.23.1440.830" timestamp="1606207251396" />
     <state x="58" y="176" width="670" height="676" key="search.everywhere.popup" timestamp="1605600773800">
       <screen x="0" y="23" width="1440" height="830" />
     </state>

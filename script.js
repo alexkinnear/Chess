@@ -398,21 +398,40 @@ class Piece {
         }
         return false;
     }
+}
 
+function AI_Move(game) {
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            if (game.board[i][j].user === 2) {
+                moves = game.board[i][j].getMoves(game);
+                if (moves.length > 0) {
+                    game.board[moves[0][0]][moves[0][1]] = game.board[i][j];
+                    game.board[moves[0][0]][moves[0][1]].pos = [moves[0][0], moves[0][1]];
+                    game.board[i][j] = new Piece(0, 0, 0, 0);
+                    game.drawBoard();
+                    console.log("Hello");
+                    return;
+                }
+            }
+        }
+    }
+}
 
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 
 function main() {
     var game = new Chess();
-    var currentTurn = 1;
     var selectedPiece;
     document.body.onclick = function(event) {
         let x = event.clientX;
         let y = event.clientY;
         let row = Math.floor(y * 8.5 / game.canvas.width);
         let col = Math.floor(x * 8.5 / game.canvas.width);
-        if (currentTurn === 1 && game.board[row][col].user === 1) {
+        if (game.board[row][col].user === 1) {
             game.board[row][col].showMoves(game);
             selectedPiece = game.board[row][col];
         }
@@ -424,10 +443,18 @@ function main() {
                 game.board[row][col].pos = [row, col];
                 selectedPiece = new Piece(0, 0, 0, 0);
                 game.drawBoard();
+                sleep(500).then(() => {
+                    AI_Move(game);
+                })
+                game.drawBoard();
             }
-        }
 
+        }
     }
+
+
+
+
 
     game.drawBoard();
 }
